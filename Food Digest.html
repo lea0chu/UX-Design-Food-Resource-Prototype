@@ -207,7 +207,7 @@ html_content <- '<!DOCTYPE html>
   </div>
 </div>
 <script>
-  var formUrl = "#";
+
   var qrUrl = "https://lea0chu.github.io/UX-Design-Food-Resource-Prototype/";
   function buildQR(url) {
     var el = document.getElementById("qrcode");
@@ -217,15 +217,6 @@ html_content <- '<!DOCTYPE html>
   buildQR(qrUrl);
   function openQrLink() { if (qrUrl) window.open(qrUrl, "_blank"); }
   
-  function applyLinks() {
-    formUrl = document.getElementById("formUrlInput").value || "#";
-    document.getElementById("formBtn").href = formUrl;
-    var target = document.getElementById("qrTarget").value;
-    if (target === "form") qrUrl = formUrl;
-    else if (target === "resources") qrUrl = "food_resources.html";
-    else qrUrl = document.getElementById("qrCustomUrl").value || formUrl;
-    buildQR(qrUrl);
-  }
   function filterDeals(el, type) {
     document.querySelectorAll(".tag").forEach(function(t) { t.classList.remove("active"); });
     el.classList.add("active");
