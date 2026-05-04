@@ -216,9 +216,7 @@ html_content <- '<!DOCTYPE html>
   }
   buildQR(qrUrl);
   function openQrLink() { if (qrUrl) window.open(qrUrl, "_blank"); }
-  document.getElementById("qrTarget").addEventListener("change", function() {
-    document.getElementById("qrCustomUrl").style.display = this.value === "custom" ? "inline-block" : "none";
-  });
+  
   function applyLinks() {
     formUrl = document.getElementById("formUrlInput").value || "#";
     document.getElementById("formBtn").href = formUrl;
