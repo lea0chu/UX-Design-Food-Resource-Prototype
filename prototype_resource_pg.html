@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Resources · Columbia CGSA</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f0ece4; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 32px 16px; }
+  .page { width: 640px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; }
+
+  .header { background: #1a2744; padding: 28px 40px 24px; }
+  .header-meta { font-size: 11px; letter-spacing: 0.08em; color: #9fb3d8; margin: 0 0 4px; text-transform: uppercase; }
+  .header h1 { font-size: 26px; font-weight: 500; color: #fff; margin: 0 0 6px; }
+  .header-sub { font-size: 13px; color: #9fb3d8; margin: 0 0 16px; }
+
+  .search-bar { display: flex; gap: 8px; margin-bottom: 14px; }
+  .search-bar input { flex: 1; font-size: 13px; padding: 7px 12px; border-radius: 8px; border: none; outline: none; color: #111; }
+  .search-bar input::placeholder { color: #999; }
+
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { background: #2d3f6e; color: #c5d5f0; font-size: 11px; padding: 4px 12px; border-radius: 20px; cursor: pointer; transition: background 0.15s; border: none; font-family: inherit; }
+  .tag:hover { background: #3a4f8a; }
+  .tag.active { background: #c5d5f0; color: #1a2744; font-weight: 500; }
+
+  .body { padding: 28px 40px; }
+
+  .notice { background: #f5f3ee; border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; border-left: 3px solid #1a2744; font-size: 13px; color: #444; line-height: 1.6; }
+
+  .section-title { font-size: 15px; font-weight: 500; color: #111; margin: 0 0 10px; padding-bottom: 8px; border-bottom: 0.5px solid #ddd; }
+  .section-block { margin-bottom: 24px; }
+  .section-block.hidden { display: none; }
+
+  .cards { display: flex; flex-direction: column; gap: 10px; }
+  .card { border: 0.5px solid #ddd; border-radius: 8px; padding: 14px 16px; transition: box-shadow 0.15s, transform 0.15s; }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
+  .card.hidden { display: none; }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+  .card-name { font-size: 14px; font-weight: 500; color: #111; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 12px; white-space: nowrap; flex-shrink: 0; margin-left: 8px; }
+  .badge-green { background: #e1f5ee; color: #0f6e56; }
+  .badge-blue { background: #e6f1fb; color: #185fa5; }
+  .badge-amber { background: #faeeda; color: #854f0b; }
+  .badge-purple { background: #eeedfe; color: #534ab7; }
+  .badge-teal { background: #eaf3de; color: #3b6d11; }
+  .card-desc { font-size: 13px; color: #555; margin: 0 0 8px; line-height: 1.55; }
+  .card-link { font-size: 12px; color: #888; }
+  .card-url { display: inline-block; margin-top: 6px; font-size: 12px; color: #1a2744; text-decoration: underline; font-weight: 500; }
+  .card-url:hover { color: #2d3f6e; }
+
+  .no-results { font-size: 13px; color: #999; text-align: center; padding: 32px; display: none; }
+
+  .cta { background: #f5f3ee; border-radius: 8px; padding: 14px 16px; margin-bottom: 8px; }
+  .cta-title { font-size: 13px; font-weight: 500; color: #111; margin: 0 0 4px; }
+  .cta-text { font-size: 13px; color: #555; margin: 0 0 12px; line-height: 1.5; }
+  .cta-btn { display: inline-block; font-size: 13px; padding: 7px 16px; border-radius: 8px; background: #1a2744; color: #fff; text-decoration: none; transition: background 0.15s; }
+  .cta-btn:hover { background: #2d3f6e; }
+
+  .footer { font-size: 11px; color: #aaa; margin: 16px 0 0; text-align: center; }
+  .footer a { color: #aaa; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <p class="header-meta">Columbia Graduate Student Association</p>
+    <h1>Food resources</h1>
+    <p class="header-sub">A guide to campus, city, state, and federal support for graduate students.</p>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search resources..." oninput="applyFilters()" />
+    </div>
+    <div class="tags">
+      <button class="tag active" onclick="setFilter(this,'all')">All resources</button>
+      <button class="tag" onclick="setFilter(this,'campus')">🏛️ On campus</button>
+      <button class="tag" onclick="setFilter(this,'federal')">🇺🇸 Federal</button>
+      <button class="tag" onclick="setFilter(this,'nyc')">🏙️ NYC programs</button>
+      <button class="tag" onclick="setFilter(this,'discount')">🛒 Discounts</button>
+      <button class="tag" onclick="setFilter(this,'dietary')">🌙 Halal &amp; dietary</button>
+    </div>
+  </div>
+
+  <div class="body">
+    <p class="notice">These resources are available to you — no judgment, no referral needed for most. If you're unsure whether you qualify, check anyway. Many programs have broader eligibility than students expect.</p>
+
+    <div class="section-block" data-section="campus">
+      <p class="section-title">🏛️ On campus</p>
+      <div class="cards">
+        <div class="card" data-filter="campus" data-text="columbia university food pantry free no appt wien hall shelf stable hygiene produce">
+          <div class="card-header">
+            <p class="card-name">Columbia University Food Pantry</p>
+            <span class="badge badge-green">Free · No appt needed</span>
+          </div>
+          <p class="card-desc">Open to all Columbia students. Stocks shelf-stable foods, hygiene items, and sometimes fresh produce. No documentation required.</p>
+          <p class="card-link">📍 Wien Hall</p>
+          <a class="card-url" href="https://health.columbia.edu/content/food-pantry" target="_blank">health.columbia.edu/food-pantry ↗</a>
+        </div>
+        <div class="card" data-filter="campus" data-text="graduate dining plan swipe discounted rate faculty house chef mikes fac shack grubhub flex dollars osa">
+          <div class="card-header">
+            <p class="card-name">Graduate Dining Plan</p>
+            <span class="badge badge-blue">Paid · Discounted rate</span>
+          </div>
+          <p class="card-desc">$11-$13.75 per swipe vs $17.50 walk-in. Eligible halls: Faculty House, Chef Mike's, Fac Shack. Flex dollars can be used on Grubhub delivery.</p>
+          <a class="card-url" href="https://dining.columbia.edu" target="_blank">dining.columbia.edu · Contact OSA to enroll ↗</a>
+        </div>
+        <div class="card" data-filter="campus" data-text="cu basic needs food insecurity pantry emergency funds snap counseling confidential">
+          <div class="card-header">
+            <p class="card-name">CU Basic Needs</p>
+            <span class="badge badge-green">Free · Confidential</span>
+          </div>
+          <p class="card-desc">Columbia's hub for food insecurity support. Connects students to the pantry, emergency funds, SNAP assistance, and counseling. Can help you navigate all other programs on this page.</p>
+          <a class="card-url" href="https://studentaffairs.columbia.edu/basic-needs" target="_blank">studentaffairs.columbia.edu/basic-needs ↗</a>
+        </div>
+        <div class="card" data-filter="campus" data-text="emergency student funds grants financial hardship dean of students one time">
+          <div class="card-header">
+            <p class="card-name">Emergency Student Funds</p>
+            <span class="badge badge-amber">Application required</span>
+          </div>
+          <p class="card-desc">One-time grants for students facing unexpected financial hardship, including food insecurity. Administered by the Dean of Students office. Turnaround is typically within a week.</p>
+          <a class="card-url" href="https://dos.columbia.edu" target="_blank">dos.columbia.edu/emergency-funds ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block" data-section="federal">
+      <p class="section-title">🇺🇸 Federal benefits</p>
+      <div class="cards">
+        <div class="card" data-filter="federal" data-text="snap food stamps federal monthly benefit work study visa citizens 200">
+          <div class="card-header">
+            <p class="card-name">SNAP (Food Stamps)</p>
+            <span class="badge badge-green">Federal · Monthly benefit</span>
+          </div>
+          <p class="card-desc">Grad students who work 20+ hrs/week, or receive federal work-study, may qualify. Average benefit is $200+/month. US citizens and some visa holders are eligible — check your status at the link below.</p>
+          <a class="card-url" href="https://otda.ny.gov/programs/snap/" target="_blank">mybenefits.ny.gov · otda.ny.gov/snap ↗</a>
+        </div>
+        <div class="card" data-filter="federal" data-text="wic women infants children pregnant postpartum breastfeeding nutrition healthcare monthly">
+          <div class="card-header">
+            <p class="card-name">WIC (Women, Infants &amp; Children)</p>
+            <span class="badge badge-green">Federal · If applicable</span>
+          </div>
+          <p class="card-desc">For pregnant, postpartum, or breastfeeding students, and children under 5. Provides monthly food benefits, nutrition support, and healthcare referrals. Income thresholds are generous.</p>
+          <a class="card-url" href="https://www.health.ny.gov/wic" target="_blank">health.ny.gov/wic ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block" data-section="nyc">
+      <p class="section-title">🏙️ NYC &amp; community programs</p>
+      <div class="cards">
+        <div class="card" data-filter="nyc" data-text="nyc free meals program community kitchens grab and go boroughs no id no income verification">
+          <div class="card-header">
+            <p class="card-name">NYC Free Meals Program</p>
+            <span class="badge badge-green">Free · No ID required</span>
+          </div>
+          <p class="card-desc">NYC operates community kitchens and grab-and-go meal sites across all five boroughs. No income verification or ID needed. Find locations near campus or your home neighborhood.</p>
+          <a class="card-url" href="https://www.nyc.gov/site/opportunity/poverty-in-nyc/free-meals.page" target="_blank">nyc.gov/freemeals · Text "FOOD" to 877-877 ↗</a>
+        </div>
+        <div class="card" data-filter="nyc" data-text="harlem food pantries morningside heights halal culturally specific walk in 311">
+          <div class="card-header">
+            <p class="card-name">Harlem food pantries</p>
+            <span class="badge badge-green">Free · Walk-in</span>
+          </div>
+          <p class="card-desc">Several pantries operate within walking distance of Morningside Heights. Includes options with halal-certified and culturally specific foods. Hours vary — check before visiting.</p>
+          <a class="card-url" href="https://www.foodpantries.org/ci/ny-new_york" target="_blank">foodpantries.org · or call 311 ↗</a>
+        </div>
+        <div class="card" data-filter="nyc" data-text="too good to go surplus food restaurants cafes bakeries cheap grab bag surprise 3 6">
+          <div class="card-header">
+            <p class="card-name">Too Good To Go</p>
+            <span class="badge badge-purple">App · $3-6 per bag</span>
+          </div>
+          <p class="card-desc">Rescue surplus food from restaurants, cafes, and bakeries near campus for $3-6. Highly active in the Columbia/UWS area. Grab bags are surprise assortments — great for cheap meals.</p>
+          <a class="card-url" href="https://www.toogoodtogo.com" target="_blank">toogoodtogo.com · iOS &amp; Android ↗</a>
+        </div>
+        <div class="card" data-filter="nyc" data-text="plentiful app pantry finder appointment booking real time availability wait times halal">
+          <div class="card-header">
+            <p class="card-name">Plentiful app (NYC food pantry finder)</p>
+            <span class="badge badge-green">Free · Reserve ahead</span>
+          </div>
+          <p class="card-desc">Book pantry appointments across NYC from your phone. Shows real-time availability, wait times, and dietary filters including halal. Reduces time spent waiting in line.</p>
+          <a class="card-url" href="https://www.plentifulapp.com" target="_blank">plentifulapp.com ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block" data-section="discount">
+      <p class="section-title">🛒 Student discounts &amp; savings</p>
+      <div class="cards">
+        <div class="card" data-filter="discount" data-text="morton williams 10% off tuesdays columbia id ebt snap broadway 116th groceries">
+          <div class="card-header">
+            <p class="card-name">Morton Williams</p>
+            <span class="badge badge-teal">10% off · Tuesdays</span>
+          </div>
+          <p class="card-desc">Show Columbia ID every Tuesday for 10% off groceries. Accepts EBT/SNAP. Walking distance from campus at Broadway &amp; 116th.</p>
+          <a class="card-url" href="https://maps.google.com/?q=Morton+Williams+2840+Broadway+New+York" target="_blank">📍 2840 Broadway · View on map ↗</a>
+        </div>
+        <div class="card" data-filter="discount" data-text="amazon prime student 50% off edu email whole foods pickup delivery ebt fresh">
+          <div class="card-header">
+            <p class="card-name">Amazon Prime Student</p>
+            <span class="badge badge-teal">50% off Prime</span>
+          </div>
+          <p class="card-desc">$7.49/month with .edu email. Includes free Whole Foods pickup and delivery discounts. Pairs with EBT for additional grocery savings on Amazon Fresh.</p>
+          <a class="card-url" href="https://www.amazon.com/joinstudent" target="_blank">amazon.com/prime/student ↗</a>
+        </div>
+        <div class="card" data-filter="discount" data-text="ebt delivery apps instacart amazon fresh walmart freshdirect snap accepted grocery">
+          <div class="card-header">
+            <p class="card-name">EBT on delivery apps</p>
+            <span class="badge badge-teal">SNAP accepted</span>
+          </div>
+          <p class="card-desc">Instacart, Amazon Fresh, Walmart Grocery, and FreshDirect all accept SNAP/EBT for grocery delivery in NYC. Note: delivery fees are not covered by SNAP and must be paid separately.</p>
+          <p class="card-link">Check each app's payment settings to add your EBT card</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block" data-section="dietary">
+      <p class="section-title">🌙 Halal &amp; dietary-specific resources</p>
+      <div class="cards">
+        <div class="card" data-filter="dietary" data-text="zabihah halal restaurant grocery directory north america certification reviews distance">
+          <div class="card-header">
+            <p class="card-name">Zabihah.com</p>
+            <span class="badge badge-green">🌙 Halal finder</span>
+          </div>
+          <p class="card-desc">Largest halal restaurant and grocery directory in North America. Filter by distance from Columbia. Includes user reviews on certification standards.</p>
+          <a class="card-url" href="https://www.zabihah.com" target="_blank">zabihah.com ↗</a>
+        </div>
+        <div class="card" data-filter="dietary" data-text="columbia muslim students association msa halal community meals morningside heights engage">
+          <div class="card-header">
+            <p class="card-name">Columbia Muslim Students Association</p>
+            <span class="badge badge-green">Peer network</span>
+          </div>
+          <p class="card-desc">MSA maintains a community list of halal options near campus and hosts regular community meals. A practical peer network for navigating halal food access in Morningside Heights.</p>
+          <p class="card-link">Find on Columbia Engage · instagram @columbiamsa</p>
+        </div>
+        <div class="card" data-filter="dietary" data-text="happycow vegan vegetarian plant based soy free restaurants grocery stores affordable">
+          <div class="card-header">
+            <p class="card-name">HappyCow (vegan &amp; vegetarian finder)</p>
+            <span class="badge badge-purple">🌿 Veg &amp; vegan</span>
+          </div>
+          <p class="card-desc">Maps vegetarian, vegan, and veg-friendly restaurants and grocery stores near any location. Useful for finding affordable plant-based options and soy-free alternatives around campus.</p>
+          <a class="card-url" href="https://www.happycow.net" target="_blank">happycow.net ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <p class="no-results" id="noResults">No resources match your search. Try different keywords or clear the filter.</p>
+    </div>
+    
+    <p class="footer">Maintained by CGSA · Last updated April 2026 · <a href="food_digest_interactive.html">Back to Food Digest</a></p>
+  </div>
+</div>
+
+<script>
+  var activeFilter = 'all';
+
+  function setFilter(el, type) {
+    activeFilter = type;
+    document.querySelectorAll('.tag').forEach(function(t) { t.classList.remove('active'); });
+    el.classList.add('active');
+    applyFilters();
+  }
+
+  function applyFilters() {
+    var query = document.getElementById('searchInput').value.toLowerCase().trim();
+    var cards = document.querySelectorAll('.card');
+    var sections = document.querySelectorAll('.section-block');
+    var totalVisible = 0;
+
+    sections.forEach(function(section) {
+      var sectionFilter = section.dataset.section;
+      var sectionVisible = 0;
+
+      section.querySelectorAll('.card').forEach(function(card) {
+        var filterMatch = activeFilter === 'all' || card.dataset.filter === activeFilter;
+        var searchMatch = !query || card.dataset.text.includes(query) ||
+          card.querySelector('.card-name').textContent.toLowerCase().includes(query) ||
+          card.querySelector('.card-desc').textContent.toLowerCase().includes(query);
+
+        var show = filterMatch && searchMatch;
+        card.classList.toggle('hidden', !show);
+        if (show) { sectionVisible++; totalVisible++; }
+      });
+
+      section.classList.toggle('hidden', sectionVisible === 0);
+    });
+
+    document.getElementById('noResults').style.display = totalVisible === 0 ? 'block' : 'none';
+  }
+</script>
+</body>
+</html>
+
